@@ -1,0 +1,23 @@
+" 1. Seznam všech alb včetně interpreta, počtu skladeb na albu. Seřazeno dle názvu interpreta a
+názvu alba. "
+
+SELECT i.nazev AS interpret, a.nazev AS album, COUNT(s.id_skladba) AS pocet_skladeb
+FROM interpret i
+JOIN album_interpret ai ON i.id_interpret = ai.id_interpret
+JOIN album a ON ai.id_album = a.id_album
+LEFT JOIN album_skladba als ON a.id_album = als.id_album
+LEFT JOIN skladba s ON als.id_skladba = s.id_skladba
+GROUP BY i.nazev, a.nazev
+ORDER BY i.nazev, a.nazev;
+
+" 2. Najít album včetně interpreta, které obsahuje nejdelší písničku. "
+
+SELECT i.nazev AS interpret, a.nazev AS album, s.nazev AS nejdelsi_pisnicka
+FROM interpret i
+JOIN album_interpret ai ON i.id_interpret = ai.id_interpret
+JOIN album a ON ai.id_album = a.id_album
+JOIN album_skladba als ON a.id_album = als.id_album
+JOIN skladba s ON als.id_skladba = s.id_skladba
+WHERE s.delka = (
+    SELECT MAX(delka) FROM skladba
+);
